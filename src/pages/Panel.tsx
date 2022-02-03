@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Spinner, Table, Button } from 'react-bootstrap';
+import { Container, Row, Spinner, Table, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 import { getToken, deleteToken } from "../util/token";
 import { deleteUser, getUsers } from "../services/user";
-import Swal from "sweetalert2";
 import { User } from "../Model/User";
 import { CreateUser } from "../components/CreateUser";
 import { UpdateUserModal } from "../components/UpdateUser";
+
 export default function Panel() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -19,46 +21,39 @@ export default function Panel() {
   });
 
   const addUser = (user: User) => {
-    setUsers([
-      ...users,
-      user
-    ])
+    setUsers([...users, user]);
   };
 
   const deletUseFromrList = (id: string, user: User) => {
     // eslint-disable-next-line eqeqeq
     const listUsers = users.filter((u) => u.id != id);
-  
-    setUsers([
-      ...listUsers,
-      user
-    ]);
+
+    setUsers([...listUsers, user]);
   };
 
   const handlerDeleteUser = async (id: string) => {
-      Swal.fire({
-        title: `¿ Estas seguro que quieres eliminar el usuario ${id}`,
-        showDenyButton: true,
-        confirmButtonText: "Cancelar",
-        denyButtonText: `Eliminar`,
-      }).then((result) => {
-
-
-        if (!result.isConfirmed) {
-          deleteUser(id).then(async (res) => {
-            setUsers(prev => {
+    Swal.fire({
+      title: `¿ Estas seguro que quieres eliminar el usuario ${id}`,
+      showDenyButton: true,
+      confirmButtonText: "Cancelar",
+      denyButtonText: `Eliminar`,
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        deleteUser(id)
+          .then(async (res) => {
+            setUsers((prev) => {
               // eslint-disable-next-line eqeqeq
-              return prev.filter(u => u.id != id)
-            })
+              return prev.filter((u) => u.id != id);
+            });
 
-             await Swal.fire(res.data.msg, "", "success");
+            await Swal.fire(res.data.msg, "", "success");
           })
           .catch((e) => {
-             Swal.fire(e.response.data.msg, "", "error");
-          })
-        } 
-      });
-  }
+            Swal.fire(e.response.data.msg, "", "error");
+          });
+      }
+    });
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -68,7 +63,6 @@ export default function Panel() {
       })
       .catch((error) => {
         let status = error.response.status;
-        console.log("error", status);
 
         if (status === 403 || status === 401) {
           Swal.fire({
@@ -93,6 +87,15 @@ export default function Panel() {
       }}
     >
       <Container style={{ marginTop: "1rem" }}>
+        <Button
+          onClick={() => {
+            deleteToken();
+            navigate("/");
+          }}
+          variant="outline-info"
+        >
+          Cerrar sesion
+        </Button>
         <div
           style={{
             display: "flex",
@@ -100,7 +103,7 @@ export default function Panel() {
             padding: "20px",
           }}
         >
-          <h2 style={{ color: "white"}}>Panel Admin</h2>
+          <h2 style={{ color: "white" }}>Panel Admin</h2>
           <CreateUser addUser={addUser} />
         </div>
         <Row color={"white"}>
@@ -145,9 +148,14 @@ export default function Panel() {
                           }
                         </td>
                         <td>
-                          <Button onClick={() => {
-                              handlerDeleteUser(String(user.id))
-                          }} variant="danger">Eliminar</Button>
+                          <Button
+                            onClick={() => {
+                              handlerDeleteUser(String(user.id));
+                            }}
+                            variant="danger"
+                          >
+                            Eliminar
+                          </Button>
                         </td>
                       </tr>
                     );

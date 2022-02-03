@@ -21,29 +21,28 @@ export default function Login() {
     setLoading(true)
 
     try {
-       const { data } = await loginUser({ email, password });
-      
-       const { data: { token,  }} = data
-       console.log(token)
+      const { data } = await loginUser({ email, password });
 
-       if (!data.error) {
+      const { data: { token, } } = data
+
+
+      if (!data.error) {
         await Swal.fire({
-           icon: "success",
-           title: "Logueado correctamente",
-           text: data.msg,
-         });
+          icon: "success",
+          title: "Logueado correctamente",
+          text: data.msg,
+        });
 
-         saveToken(token)
-         navigate("/panel");
-       }
+        saveToken(token)
+        navigate("/panel");
+      }
 
-       console.log(data)
     } catch (error) {
-      
-         Swal.fire({
-           icon: "error",
-           title: "Usuario o contraseña incorrectos",
-         });
+
+      Swal.fire({
+        icon: "error",
+        title: "Usuario o contraseña incorrectos",
+      });
     }
 
     setLoading(false);
@@ -78,7 +77,7 @@ export default function Login() {
                   required
                   onChange={(e) => {
                     setEmail(e.target.value);
-                    console.log({ email: e.target.value });
+
                   }}
                   value={email}
                   type="email"
@@ -92,7 +91,7 @@ export default function Login() {
                   required
                   onChange={(e) => {
                     setPassword(e.target.value);
-                    console.log({ password: e.target.value });
+
                   }}
                   value={password}
                   type="password"

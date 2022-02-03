@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
+import Swal from "sweetalert2";
+
+
 import { User } from "../Model/User";
 import { UpdateUser } from "../services/user";
-import Swal from "sweetalert2";
 
 interface Props {
   user: User;
@@ -42,7 +44,6 @@ export const UpdateUserModal = ({user, deletUseFromrList }: Props) => {
        
       })
       .catch((error) => {
-        console.log(error.response);
         Swal.fire({
           icon: "error",
           title: error.response.data.msg || "Error actualizando usuario",
@@ -50,7 +51,6 @@ export const UpdateUserModal = ({user, deletUseFromrList }: Props) => {
       });
     setLoading(false);
     handleClose();
-    console.log(NewUser);
   };
 
   return (

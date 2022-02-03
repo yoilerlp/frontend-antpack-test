@@ -1,8 +1,9 @@
 import React, { useState} from "react"
 import { Modal, Button, Form, Row, Col, Spinner } from "react-bootstrap";
+import Swal from 'sweetalert2';
+
 import { User } from "../Model/User";
 import { createUser } from "../services/user";
-import Swal from 'sweetalert2';
 
 
 interface Props {
@@ -39,7 +40,6 @@ export const CreateUser = ({ addUser }: Props) => {
         addUser(res.data.data);
       })
       .catch((error) => {
-        console.log(error.response);
         Swal.fire({
           icon: "error",
           title: error.response.data.msg || "Error creando usuario",
@@ -47,7 +47,6 @@ export const CreateUser = ({ addUser }: Props) => {
       });
     setLoading(false);
     handleClose();
-    console.log(NewUser);
   };
 
   return (
